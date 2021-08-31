@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 #
 res = 25        # pixels/μm
 three_d = False # 3d calculation?
-d = 0.2        # branch separation
+d = 0.08        # branch separation
 default_d = 0.2 # branch separition in GDS
 
 
@@ -51,18 +51,20 @@ lower_branch = mp.get_GDSII_prisms(silicon, gdsII_file, LOWER_BRANCH_LAYER, si_z
 meio_branch = mp.get_GDSII_prisms(silicon, gdsII_file, MEIO_BRANCH_LAYER, si_zmin, si_zmax)
 
 cell = mp.GDSII_vol(gdsII_file, CELL_LAYER, cell_zmin, cell_zmax)
+
 p1 = mp.GDSII_vol(gdsII_file, PORT1_LAYER, si_zmin, si_zmax)
 p2 = mp.GDSII_vol(gdsII_file, PORT2_LAYER, si_zmin, si_zmax)
 p3 = mp.GDSII_vol(gdsII_file, PORT3_LAYER, si_zmin, si_zmax)
 p4 = mp.GDSII_vol(gdsII_file, PORT4_LAYER, si_zmin, si_zmax)
 p5 = mp.GDSII_vol(gdsII_file, PORT5_LAYER, si_zmin, si_zmax)
 p6 = mp.GDSII_vol(gdsII_file, PORT6_LAYER, si_zmin, si_zmax)
+
 src_vol = mp.GDSII_vol(gdsII_file, SOURCE_LAYER, si_zmin, si_zmax)
 
 # displace upper and lower branches of coupler (as well as source and flux regions)
 
 if d != default_d:
-    delta_y = 0.5*(d-default_d)
+    delta_y=d-default_d
     delta = mp.Vector3(y=delta_y)
     p1.center += delta
     p3.center -= delta
@@ -104,26 +106,26 @@ sim = mp.Simulation(resolution=res,
 mode1 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p1))
 mode2 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p2))
 mode3 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p3))
+mode4 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p4))
 mode5 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p5))
 mode6 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p6))
 
 sim.run(until_after_sources=100)
 
 # S parameters
-p1_coeff = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY mode4 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p4))
-if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
-p2_coeff = sim.get_eigenmode_coefficients(mode2, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,1]
+p1_coeff = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
+p2_coeff = sim.get_eigenmode_coefficients(mode2, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 p3_coeff = sim.get_eigenmode_coefficients(mode3, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0 ]
 p4_coeff = sim.get_eigenmode_coefficients(mode4, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 p5_coeff = sim.get_eigenmode_coefficients(mode5, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 p6_coeff = sim.get_eigenmode_coefficients(mode6, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 
 # transmittance
-p2_trans = abs(p2_coeff)**2/abs(p2_coeff)**2
-p3_trans = abs(p3_coeff)**2/abs(p2_coeff)**2
-p4_trans = abs(p4_coeff)**2/abs(p2_coeff)**2
-p5_trans = abs(p5_coeff)**2/abs(p2_coeff)**2
-p6_trans = abs(p6_coeff)**2/abs(p2_coeff)**2
+p2_trans = abs(p2_coeff)**2/abs(p1_coeff)**2
+p3_trans = abs(p3_coeff)**2/abs(p1_coeff)**2
+p4_trans = abs(p4_coeff)**2/abs(p1_coeff)**2
+p5_trans = abs(p5_coeff)**2/abs(p1_coeff)**2
+p6_trans = abs(p6_coeff)**2/abs(p1_coeff)**2
 
 
 
@@ -152,5 +154,5 @@ plt.imshow(numpy.transpose(eps_data), interpolation='spline36', cmap='binary')
 plt.imshow(numpy.flipud(numpy.transpose(ez_data)), interpolation='spline36', cmap='RdBu', alpha=0.9)
 plt.axis('off')
 plt.show()
-print("trans: {:.2f}, {:.6f}, {:.6f}, {:.6f}, {:.6f}, {:.6f}".format(d,p2_trans, p3_trans,p4_trans,p5_trans,p6_trans))
+print("trans: {:.2f}, {:.6f}, {:.6f}, {:.6f}, {:.6f}".format(d,p2_trans,p4_trans,p5_trans, p6_trans))
 sim.reset_meep()

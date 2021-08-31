@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 #
 res = 25        # pixels/μm
 three_d = False # 3d calculation?
-d = 0.1125        # branch separation
+d = 0.08        # branch separation
 
 gdsII_file = 'coupler.gds'
 CELL_LAYER = 0
@@ -54,6 +54,7 @@ p4 = mp.GDSII_vol(gdsII_file, PORT4_LAYER, si_zmin, si_zmax)
 src_vol = mp.GDSII_vol(gdsII_file, SOURCE_LAYER, si_zmin, si_zmax)
 
 # displace upper and lower branches of coupler (as well as source and flux regions)
+
 if d != default_d:
     delta_y = 0.5*(d-default_d)
     delta = mp.Vector3(y=delta_y)
@@ -81,8 +82,8 @@ if three_d:
     geometry = geometry+oxide_layer
 
 sources = [mp.EigenModeSource(src=mp.GaussianSource(fcen,fwidth=df),
-                              size=src_vol.size,
-                              center=src_vol.center,
+                              volume=src_vol,
+                              direction=mp.X,
                               eig_band=1,
                               eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z,
                               eig_match_freq=True)]
@@ -102,7 +103,7 @@ sim.run(until_after_sources=100)
 
 # S parameters
 p1_coeff = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
-p2_coeff = sim.get_eigenmode_coefficients(mode2, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,1]
+p2_coeff = sim.get_eigenmode_coefficients(mode2, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 p3_coeff = sim.get_eigenmode_coefficients(mode3, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 p4_coeff = sim.get_eigenmode_coefficients(mode4, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 
@@ -111,14 +112,15 @@ p2_trans = abs(p2_coeff)**2/abs(p1_coeff)**2
 p3_trans = abs(p3_coeff)**2/abs(p1_coeff)**2
 p4_trans = abs(p4_coeff)**2/abs(p1_coeff)**2
 
+
 print("trans: {:.2f}, {:.6f}, {:.6f}, {:.6f}".format(d,p2_trans,p3_trans,p4_trans))
 
 
 sim.reset_meep()
 
 sources = [mp.EigenModeSource(src=mp.ContinuousSource(fcen,fwidth=df),
-                              size=src_vol.size,
-                              center=src_vol.center,
+                              volume=src_vol,
+                              direction=mp.X,
                               eig_band=1,
                               eig_parity=mp.EVEN_Y+mp.ODD_Z,
                               eig_match_freq=True)]
