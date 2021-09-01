@@ -18,44 +18,47 @@ d = 0.08
 default_d = 0.2 # branch separition in GDS
 p=5 #numero de vezes que a simulacao ocorrera
 I =[]
-for i in range(p):
-    res = 25        # pixels/μm
-    three_d = False # 3d calculation?
+
+res = 25        # pixels/μm
+three_d = False # 3d calculation?
   
-    
-    
-    gdsII_file = 'triBS.gds'
-    CELL_LAYER = 0
-    PORT1_LAYER = 1
-    PORT2_LAYER = 2
-    PORT3_LAYER = 3
-    PORT4_LAYER = 4
-    PORT5_LAYER = 5
-    PORT6_LAYER = 6
-    SOURCE_LAYER = 7
-    UPPER_BRANCH_LAYER = 31
-    LOWER_BRANCH_LAYER = 32
-    MEIO_BRANCH_LAYER = 33
-    
-    t_oxide = 1.0
-    t_Si = 0.22
-    t_air = 0.78
-    
-    dpml = 1
-    cell_thickness = dpml+t_oxide+t_Si+t_air+dpml
-    
-    oxide = mp.Medium(epsilon=2.0736)
-    silicon= mp.Medium(epsilon=4.0804)
-    
-    lcen = 0.795
-    fcen = 1/lcen
-    df = 0.2*fcen
-    
-    cell_zmax = 0.5*cell_thickness if three_d else 0
-    cell_zmin = -0.5*cell_thickness if three_d else 0
-    si_zmax = 0.5*t_Si if three_d else 10
-    si_zmin = -0.5*t_Si if three_d else -10
-    
+
+
+gdsII_file = 'triBS.gds'
+CELL_LAYER = 0
+PORT1_LAYER = 1
+PORT2_LAYER = 2
+PORT3_LAYER = 3
+PORT4_LAYER = 4
+PORT5_LAYER = 5
+PORT6_LAYER = 6
+SOURCE_LAYER = 7
+UPPER_BRANCH_LAYER = 31
+LOWER_BRANCH_LAYER = 32
+MEIO_BRANCH_LAYER = 33
+
+t_oxide = 1.0
+t_Si = 0.22
+t_air = 0.78
+
+dpml = 1
+cell_thickness = dpml+t_oxide+t_Si+t_air+dpml
+
+oxide = mp.Medium(epsilon=2.0736)
+silicon= mp.Medium(epsilon=4.0804)
+
+lcen = 0.795
+fcen = 1/lcen
+df = 0.2*fcen
+
+cell_zmax = 0.5*cell_thickness if three_d else 0
+cell_zmin = -0.5*cell_thickness if three_d else 0
+si_zmax = 0.5*t_Si if three_d else 10
+si_zmin = -0.5*t_Si if three_d else -10
+
+
+for i in range(p):
+   
     # read cell size, volumes for source region and flux monitors,
     # and coupler geometry from GDSII file
     upper_branch = mp.get_GDSII_prisms(silicon, gdsII_file, UPPER_BRANCH_LAYER, si_zmin, si_zmax)
@@ -72,7 +75,7 @@ for i in range(p):
     p6 = mp.GDSII_vol(gdsII_file, PORT6_LAYER, si_zmin, si_zmax)
     
     src_vol = mp.GDSII_vol(gdsII_file, SOURCE_LAYER, si_zmin, si_zmax)
-    
+
     # displace upper and lower branches of coupler (as well as source and flux regions)
     
     if d != default_d:
@@ -164,16 +167,14 @@ print(I)
 # Data for plotting
 I=num.transpose(I)
 t = I[0]
-S13=I[3]
 S14=I[4]
 S15 = I[5]
 S16 = I[6]
 
 fig, ax = plt.subplots()
-ax.plot(t, S13,'b-o',label='S13')
 ax.plot(t, S14,'r-o',label='S14')
-ax.plot(t, S14,'g-o',label='S15')
-ax.plot(t, S14,'y-o',label='S16')
+ax.plot(t, S15,'g-o',label='S15')
+ax.plot(t, S16,'y-o',label='S16')
 
 plt.legend(loc = "upper right")
 
