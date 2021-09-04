@@ -14,9 +14,9 @@ import matplotlib.pyplot as plt
 
 #BS com o material que iremos usar nos chips e o comprimento de onda tbm 0.8
 #
-d = 0.08 
+d = 0.8 
 default_d = 0.2 # branch separition in GDS
-p=5 #numero de vezes que a simulacao ocorrera
+p=10 #numero de vezes que a simulacao ocorrera
 I =[]
 
 res = 25        # pixels/μm
@@ -136,6 +136,7 @@ for i in range(p):
     p6_coeff = sim.get_eigenmode_coefficients(mode6, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
     
     # transmittance
+    p1_trans = abs(p1_coeff)**2/abs(p1_coeff)**2
     p2_trans = abs(p2_coeff)**2/abs(p1_coeff)**2
     p3_trans = abs(p3_coeff)**2/abs(p1_coeff)**2
     p4_trans = abs(p4_coeff)**2/abs(p1_coeff)**2
@@ -147,12 +148,12 @@ for i in range(p):
        # branch separation
     S =[]
     S.append(complex(d))
-    S.append(p1_coeff)
-    S.append(p2_coeff)
-    S.append(p3_coeff)
-    S.append(p4_coeff)
-    S.append(p5_coeff)
-    S.append(p6_coeff)
+    S.append(p1_trans)
+    S.append(p2_trans)
+    S.append(p3_trans)
+    S.append(p4_trans)
+    S.append(p5_trans)
+    S.append(p6_trans)
    
     I.append(S)
     d=d+0.05
