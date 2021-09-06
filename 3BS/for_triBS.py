@@ -14,9 +14,9 @@ import matplotlib.pyplot as plt
 
 #BS com o material que iremos usar nos chips e o comprimento de onda tbm 0.8
 #
-d = 0.8 
+d = 0.075
 default_d = 0.2 # branch separition in GDS
-p=10 #numero de vezes que a simulacao ocorrera
+p=8 #numero de vezes que a simulacao ocorrera
 I =[]
 
 res = 25        # pixels/μm
