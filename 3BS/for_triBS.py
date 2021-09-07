@@ -156,7 +156,7 @@ for i in range(p):
     S.append(p6_trans)
    
     I.append(S)
-    d=d+0.05
+    d=d+0.03
     sim.reset_meep()
     
     
