@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 #
 res = 25        # pixels/μm
 three_d = False # 3d calculation?
-d = 0.08        # branch separation
+d = 0.11        # branch separation
 default_d = 0.2 # branch separition in GDS
 
 
@@ -82,7 +82,7 @@ if d != default_d:
             upper_branch[np].vertices[nv] += delta
    
 
-geometry = upper_branch+meio_branch+lower_branch
+geometry = upper_branch+meio_branch
 
 if three_d:
     oxide_center = mp.Vector3(z=-0.5*t_oxide)
@@ -121,13 +121,13 @@ p5_coeff = sim.get_eigenmode_coefficients(mode5, [1], eig_parity=mp.NO_PARITY if
 p6_coeff = sim.get_eigenmode_coefficients(mode6, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 
 # transmittance
-p2_trans = abs(p2_coeff)**2/abs(p1_coeff)**2
-p3_trans = abs(p3_coeff)**2/abs(p1_coeff)**2
-p4_trans = abs(p4_coeff)**2/abs(p1_coeff)**2
-p5_trans = abs(p5_coeff)**2/abs(p1_coeff)**2
-p6_trans = abs(p6_coeff)**2/abs(p1_coeff)**2
-
-
+norma=p2_coeff
+p1_trans = abs(p1_coeff)**2/abs()**2
+p2_trans = abs(p2_coeff)**2/abs(norma)**2
+p3_trans = abs(p3_coeff)**2/abs(norma)**2
+p4_trans = abs(p4_coeff)**2/abs(norma)**2
+p5_trans = abs(p5_coeff)**2/abs(norma)**2
+p6_trans = abs(p6_coeff)**2/abs(norma)**2
 
 sim.reset_meep()
 
