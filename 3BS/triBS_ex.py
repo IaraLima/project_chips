@@ -122,7 +122,7 @@ p6_coeff = sim.get_eigenmode_coefficients(mode6, [1], eig_parity=mp.NO_PARITY if
 
 # transmittance
 norma=p2_coeff
-p1_trans = abs(p1_coeff)**2/abs()**2
+p1_trans = abs(p1_coeff)**2/abs(norma)**2
 p2_trans = abs(p2_coeff)**2/abs(norma)**2
 p3_trans = abs(p3_coeff)**2/abs(norma)**2
 p4_trans = abs(p4_coeff)**2/abs(norma)**2
