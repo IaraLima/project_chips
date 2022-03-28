@@ -12,7 +12,8 @@ d = 0.013        # branch separation
 default_d = 0.2 # branch separition in GDS
 
 
-gdsII_file = 'triBS3.gds'
+
+gdsII_file = 'triBS.gds'
 CELL_LAYER = 0
 PORT1_LAYER = 1
 PORT2_LAYER = 2
@@ -37,7 +38,6 @@ silicon= mp.Medium(epsilon=4.0804)
 
 lcen = 0.795
 fcen = 1/lcen
-
 df = 0.2*fcen
 
 cell_zmax = 0.5*cell_thickness if three_d else 0
@@ -121,7 +121,7 @@ p4_coeff = sim.get_eigenmode_coefficients(mode4, [1], eig_parity=mp.NO_PARITY if
 p5_coeff = sim.get_eigenmode_coefficients(mode5, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 p6_coeff = sim.get_eigenmode_coefficients(mode6, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 
-norma= p3_coeff
+norma= p2_coeff
 p1_trans = abs(p1_coeff)**2/abs(norma)**2
 p2_trans = abs(p2_coeff)**2/abs(norma)**2
 p3_trans = abs(p3_coeff)**2/abs(norma)**2
@@ -158,3 +158,7 @@ plt.axis('off')
 plt.show()
 print("trans: {:.2f}, {:.6f}, {:.6f}, {:.6f}, {:.6f}".format(d,p2_trans,p4_trans,p5_trans, p6_trans))
 sim.reset_meep()
+
+
+
+

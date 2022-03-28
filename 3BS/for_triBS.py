@@ -136,12 +136,13 @@ for i in range(p):
     p6_coeff = sim.get_eigenmode_coefficients(mode6, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
     
     # transmittance
-    p1_trans = abs(p1_coeff)**2/abs(p1_coeff)**2
-    p2_trans = abs(p2_coeff)**2/abs(p1_coeff)**2
-    p3_trans = abs(p3_coeff)**2/abs(p1_coeff)**2
-    p4_trans = abs(p4_coeff)**2/abs(p1_coeff)**2
-    p5_trans = abs(p5_coeff)**2/abs(p1_coeff)**2
-    p6_trans = abs(p6_coeff)**2/abs(p1_coeff)**2
+    norma= p2_coeff
+    p1_trans = abs(p1_coeff)**2/abs(norma)**2
+    p2_trans = abs(p2_coeff)**2/abs(norma)**2
+    p3_trans = abs(p3_coeff)**2/abs(norma)**2
+    p4_trans = abs(p4_coeff)**2/abs(norma)**2
+    p5_trans = abs(p5_coeff)**2/abs(norma)**2
+    p6_trans = abs(p6_coeff)**2/abs(norma)**2
     
 
 
