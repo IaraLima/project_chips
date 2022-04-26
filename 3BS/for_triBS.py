@@ -24,7 +24,7 @@ three_d = False # 3d calculation?
   
 
 
-gdsII_file = 'triBS.gds'
+gdsII_file = 'triBS2.gds'
 CELL_LAYER = 0
 PORT1_LAYER = 1
 PORT2_LAYER = 2
@@ -81,11 +81,29 @@ for i in range(p):
     if d != default_d:
         delta_y=d-default_d
         delta = mp.Vector3(y=delta_y)
+        
+        #position detectores
         p1.center += delta
         p3.center -= delta
         p4.center += delta
         p6.center -= delta
-        src_vol.center += delta
+        
+        #position source 
+        
+        if (src_vol.center.y>0):
+                src_vol.center+=delta
+                
+        elif (src_vol.center.y<0):
+            src_vol.center -= delta
+        
+        else: 
+            src_vol.center=src_vol.center
+            
+        
+        
+        
+        #position branches
+        
         cell.size += 2*delta
         for np in range(len(lower_branch)):
             lower_branch[np].center -= delta
@@ -95,6 +113,7 @@ for i in range(p):
             upper_branch[np].center += delta
             for nv in range(len(upper_branch[np].vertices)):
                 upper_branch[np].vertices[nv] += delta
+       
        
     
     geometry = upper_branch+meio_branch+lower_branch

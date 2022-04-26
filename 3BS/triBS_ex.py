@@ -12,7 +12,7 @@ d = 0.013        # branch separation
 default_d = 0.2 # branch separition in GDS
 
 
-gdsII_file = 'triBS3.gds'
+gdsII_file = 'triBS1.gds'
 CELL_LAYER = 0
 PORT1_LAYER = 1
 PORT2_LAYER = 2
@@ -64,14 +64,41 @@ src_vol = mp.GDSII_vol(gdsII_file, SOURCE_LAYER, si_zmin, si_zmax)
 
 # displace upper and lower branches of coupler (as well as source and flux regions)
 
+p1a=p1.center
+p2a=p2.center
+p3a=p3.center
+p4a=p4.center
+p5a=p5.center
+p6a=p6.center
+
+
+
 if d != default_d:
     delta_y=d-default_d
     delta = mp.Vector3(y=delta_y)
+    
+    #position detectores
     p1.center += delta
     p3.center -= delta
     p4.center += delta
     p6.center -= delta
-    src_vol.center += delta
+    
+    #position source 
+    
+    if (src_vol.center.y>0):
+            src_vol.center+=delta
+            
+    elif (src_vol.center.y<0):
+        src_vol.center -= delta
+    
+    else: 
+        src_vol.center=src_vol.center
+        
+    
+    
+    
+    #position branches
+    
     cell.size += 2*delta
     for np in range(len(lower_branch)):
         lower_branch[np].center -= delta
@@ -121,7 +148,16 @@ p4_coeff = sim.get_eigenmode_coefficients(mode4, [1], eig_parity=mp.NO_PARITY if
 p5_coeff = sim.get_eigenmode_coefficients(mode5, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 p6_coeff = sim.get_eigenmode_coefficients(mode6, [1], eig_parity=mp.NO_PARITY if three_d else mp.EVEN_Y+mp.ODD_Z).alpha[0,0,0]
 
-norma= p3_coeff
+if (src_vol.center.y>0):
+     norma= p1_coeff
+            
+elif (src_vol.center.y<0):
+    norma= p3_coeff
+
+else: 
+    norma= p2_coeff
+
+
 p1_trans = abs(p1_coeff)**2/abs(norma)**2
 p2_trans = abs(p2_coeff)**2/abs(norma)**2
 p3_trans = abs(p3_coeff)**2/abs(norma)**2
@@ -157,4 +193,20 @@ plt.imshow(numpy.flipud(numpy.transpose(ez_data)), interpolation='spline36', cma
 plt.axis('off')
 plt.show()
 print("trans: {:.2f}, {:.6f}, {:.6f}, {:.6f}, {:.6f}".format(d,p2_trans,p4_trans,p5_trans, p6_trans))
+
+print(p1.center)
+print(p2.center)
+print(p3.center)
+print(p4.center)
+print(p5.center)
+print(p6.center)
+
+print("antes")
+print(p1a)
+print(p2a)
+print(p3a)
+print(p4a)
+print(p5a)
+print(p6a)
+
 sim.reset_meep()
